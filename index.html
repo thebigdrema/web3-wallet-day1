@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{background:#0a0a0a;color:white;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
+div{background:#1a1a1a;padding:30px;border-radius:16px;border:1px solid #333;text-align:center}
+button{background:#6c5ce7;color:white;border:none;padding:10px 20px;border-radius:8px;margin-top:15px}
+p{margin:8px 0;color:#ccc}
+</style>
+</head>
+<body>
+<script>
+const wallet={address:"0x"+Math.random().toString(16).slice(2,12)+"..."+Math.random().toString(16).slice(2,6),balanceEth:1.5};
+const card=document.createElement("div");
+const title=document.createElement("h2");
+title.textContent="Wallet Balance";
+const address=document.createElement("p");
+address.textContent=`Address: ${wallet.address}`;
+const balance=document.createElement("p");
+function updateBalanceDisplay(){balance.textContent=`Balance: ${wallet.balanceEth.toFixed(1)} ETH`;}
+updateBalanceDisplay();
+const refreshButton=document.createElement("button");
+refreshButton.textContent="Refresh Balance";
+refreshButton.addEventListener("click",()=>{wallet.balanceEth=Number((wallet.balanceEth+0.1).toFixed(1));updateBalanceDisplay();});
+const credit=document.createElement("p");
+credit.textContent="Built by Michael Ikwut Michael in Port Harcourt - Day 1";
+card.append(title,address,balance,refreshButton,credit);
+document.body.replaceChildren(card);
+</script>
+</body>
+</html>
