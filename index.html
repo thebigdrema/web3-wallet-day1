@@ -2,31 +2,47 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Michael's Wallet Day 2</title>
 <style>
-body{background:#0a0a0a;color:white;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
-div{background:#1a1a1a;padding:30px;border-radius:16px;border:1px solid #333;text-align:center}
-button{background:#6c5ce7;color:white;border:none;padding:10px 20px;border-radius:8px;margin-top:15px}
-p{margin:8px 0;color:#ccc}
+body{background:#0a0a0f;color:white;font-family:Arial;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
+.card{background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);padding:25px;border-radius:20px;width:90%;max-width:360px;box-shadow:0 0 30px rgba(139,92,246,0.3)}
+h2{text-align:center;color:#a78bfa}
+.btn{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,#8b5cf6,#3b82f6);color:white;font-weight:bold;font-size:16px;margin-top:10px}
+.info{background:#111;padding:12px;border-radius:10px;margin:10px 0;word-break:break-all;font-size:14px}
+.label{color:#888;font-size:12px}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
 </head>
 <body>
+<div class="card">
+<h2>💜 Michael's Wallet</h2>
+<p style="text-align:center;font-size:12px;color:#aaa">Day 2 • PH → Web3</p>
+<div class="info"><span class="label">ADDRESS</span><div id="address">Not Connected</div></div>
+<div class="info"><span class="label">BALANCE</span><div id="balance">--</div></div>
+<div class="info"><span class="label">NETWORK</span><div id="network">--</div></div>
+<button class="btn" onclick="connect()">Connect MetaMask</button>
+<button class="btn" style="background:#222" onclick="getBalance()">Refresh Balance</button>
+<p style="text-align:center;font-size:10px;color:#555;margin-top:15px">Built by Michael • Day 2</p>
+</div>
 <script>
-const wallet={address:"0x"+Math.random().toString(16).slice(2,12)+"..."+Math.random().toString(16).slice(2,6),balanceEth:1.5};
-const card=document.createElement("div");
-const title=document.createElement("h2");
-title.textContent="Wallet Balance";
-const address=document.createElement("p");
-address.textContent=`Address: ${wallet.address}`;
-const balance=document.createElement("p");
-function updateBalanceDisplay(){balance.textContent=`Balance: ${wallet.balanceEth.toFixed(1)} ETH`;}
-updateBalanceDisplay();
-const refreshButton=document.createElement("button");
-refreshButton.textContent="Refresh Balance";
-refreshButton.addEventListener("click",()=>{wallet.balanceEth=Number((wallet.balanceEth+0.1).toFixed(1));updateBalanceDisplay();});
-const credit=document.createElement("p");
-credit.textContent="Built by Michael Ikwut Michael in Port Harcourt - Day 1";
-card.append(title,address,balance,refreshButton,credit);
-document.body.replaceChildren(card);
+let provider,signer;
+async function connect(){
+if(!window.ethereum){alert("Open in MetaMask browser!");return;}
+provider=new ethers.BrowserProvider(window.ethereum);
+await provider.send("eth_requestAccounts",[]);
+signer=await provider.getSigner();
+const addr=await signer.getAddress();
+document.getElementById("address").innerText=addr;
+const net=await provider.getNetwork();
+document.getElementById("network").innerText=net.name+" (Chain: "+net.chainId+")";
+getBalance();
+}
+async function getBalance(){
+if(!signer)return;
+const addr=await signer.getAddress();
+const bal=await provider.getBalance(addr);
+document.getElementById("balance").innerText=ethers.formatEther(bal)+" ETH";
+}
 </script>
 </body>
 </html>
